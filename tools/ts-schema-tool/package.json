@@ -1,0 +1,34 @@
+{
+  "name": "schema-tool",
+  "version": "1.0.0",
+  "description": "Validator for prism schema definition",
+  "main": "./dist/index.js",
+  "bin": "./dist/cli.js",
+  "files": [
+    "dist/**/*",
+    "!dist/**/*.test.js"
+  ],
+  "dependencies": {
+    "ajv": "^8.11.0",
+    "commander": "^9.3.0",
+    "jsonld": "^6.0.0",
+    "jsonlint": "^1.6.3"
+  },
+  "devDependencies": {
+    "@types/jsonld": "^1.5.6",
+    "ava": "^4.3.0",
+    "pkg": "^5.7.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.8.2",
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "dev": "ts-node ./src/cli.ts",
+    "clean": "rimraf ./dist/ ./exec/",
+    "build": "npm run clean && tsc",
+    "test": "npm run build && ava --verbose",
+    "bundle": "npm run build && pkg . --out-dir ./exec/"
+  },
+  "author": "proofspace",
+  "license": "ISC"
+}
