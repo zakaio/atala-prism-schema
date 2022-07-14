@@ -6,9 +6,9 @@
 - [4. [Required] Property `PRISM Credential Schema Definition > id`](#id)
 - [5. [Required] Property `PRISM Credential Schema Definition > author`](#author)
 - [6. [Required] Property `PRISM Credential Schema Definition > trustRegistry`](#trustRegistry)
-  - [6.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 0`](#trustRegistry_oneOf_i0)
-    - [6.1.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 0 > type`](#trustRegistry_oneOf_i0_type)
-    - [6.1.2. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 0 > issuer`](#trustRegistry_oneOf_i0_issuer)
+  - [6.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > AAA`](#trustRegistry_oneOf_i0)
+    - [6.1.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > AAA > type`](#trustRegistry_oneOf_i0_type)
+    - [6.1.2. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > AAA > issuer`](#trustRegistry_oneOf_i0_issuer)
   - [6.2. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 1`](#trustRegistry_oneOf_i1)
     - [6.2.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 1 > type`](#trustRegistry_oneOf_i1_type)
     - [6.2.2. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 1 > token`](#trustRegistry_oneOf_i1_token)
@@ -126,11 +126,13 @@
 
 | One of(Option)                    |
 | --------------------------------- |
-| [item 0](#trustRegistry_oneOf_i0) |
+| [AAA](#trustRegistry_oneOf_i0)    |
 | [item 1](#trustRegistry_oneOf_i1) |
 | [item 2](#trustRegistry_oneOf_i2) |
 
-### <a name="trustRegistry_oneOf_i0"></a>6.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 0`
+### <a name="trustRegistry_oneOf_i0"></a>6.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > AAA`
+
+**Title:** AAA
 
 | Type                      | `object`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -141,14 +143,14 @@
 | - [type](#trustRegistry_oneOf_i0_type )     | No      | const  | No         | -                          | -                                                                                |
 | - [issuer](#trustRegistry_oneOf_i0_issuer ) | No      | string | No         | Same as [author](#author ) | decentralizes identifier (did) as specified in 'https://www.w3.org/TR/did-core'  |
 
-#### <a name="trustRegistry_oneOf_i0_type"></a>6.1.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 0 > type`
+#### <a name="trustRegistry_oneOf_i0_type"></a>6.1.1. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > AAA > type`
 
 | Type | `const` |
 | ---- | ------- |
 
 Specific value: `"issuer"`
 
-#### <a name="trustRegistry_oneOf_i0_issuer"></a>6.1.2. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > item 0 > issuer`
+#### <a name="trustRegistry_oneOf_i0_issuer"></a>6.1.2. Property `PRISM Credential Schema Definition > trustRegistry > oneOf > AAA > issuer`
 
 | Type                   | `string`          |
 | ---------------------- | ----------------- |
@@ -566,4 +568,4 @@ Specific value: `"array"`
 | ---- | -------- |
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2022-07-14 at 08:49:03 +0300
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2022-07-14 at 11:48:59 +0300
