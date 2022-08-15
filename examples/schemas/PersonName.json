@@ -1,0 +1,14 @@
+{
+ "name": "PersonName",
+ "description": "Person name (currently - minimal subschema)",
+ "id": "https://schema.org/Person",
+ "version": "0.0.1",
+ "author": "did:email:ruslan@shevchenko.kiev.ua",
+ "trustRegistry": {
+	 "type": "permissionless"
+ },
+ "properties": {
+    "givenName": { "type": "string" },
+    "familyName": { "type": "string" }
+ }
+}
