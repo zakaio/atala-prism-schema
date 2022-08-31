@@ -13,6 +13,7 @@
     "ajv": "^8.11.0",
     "cardano-wallet-js": "^1.4.0",
     "commander": "^9.4.0",
+    "jest": "^29.0.1",
     "jsonld": "^6.0.0"
   },
   "devDependencies": {
@@ -27,7 +28,7 @@
     "dev": "ts-node ./src/cli.ts",
     "clean": "rimraf ./dist/ ./exec/",
     "build": "npm run clean && tsc",
-    "test": "npm run build && ava --verbose",
+    "test": "npm run build && jest",
     "bundle": "npm run build && pkg . --out-dir ./exec/"
   },
   "author": "proofspace",
