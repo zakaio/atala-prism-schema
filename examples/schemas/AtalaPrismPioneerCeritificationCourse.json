@@ -1,0 +1,17 @@
+{
+ "name": "Atala Prism Pioneer Completition Certificate",
+ "description": "subj",
+ "id": "https://credentials.cardano/completition-certificate",
+ "version": "0.0.1",
+ "author": "did:prism:<need-to-define>",
+ "trustRegistry": {
+	 "type": "oneIssuer"
+ },
+ "properties": {
+    "Course Name": { "type": "string" },
+    "Course Version": { "type": "string" }
+    "Full Name": { "type": "string" }
+    "Email": { "type": "string" }
+    "Date of Completition": { "type": "date" }
+ }
+}
