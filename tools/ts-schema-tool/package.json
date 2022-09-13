@@ -2,8 +2,8 @@
   "name": "schema-tool",
   "version": "1.0.0",
   "description": "Validator for prism schema definition",
-  "main": "./dist/index.js",
-  "bin": "./dist/cli.js",
+  "main": "./dist/src/index.js",
+  "bin": "./dist/src/cli.js",
   "files": [
     "dist/**/*",
     "!dist/**/*.test.js"
