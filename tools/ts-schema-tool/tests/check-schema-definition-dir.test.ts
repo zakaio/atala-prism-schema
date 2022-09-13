@@ -1,11 +1,17 @@
 import { callCli }  from './cliCaller'
-
+import * as fs from 'fs'
 
 test('for all positive schemas', async () => {
-  let result = await callCli(['check-schema-definition', '"../../examples/schemas/pos/PersonName.json"'], '.');
-  expect(result.stderr).toBe("");
-  expect(result.stdout).toBe('ok\n');
-  expect(result.code).toBe(0);
+  const posDir = "../../examples/schemas/pos";
+  const posSchemas = fs.readdirSync(posDir)
+  for(const schemaFile of posSchemas) {
+    const fname = `${posDir}/${schemaFile}`
+    console.log("scheck-schema-definition "+fname)
+    let result = await callCli(['check-schema-definition', '"../../examples/schemas/pos/PersonName.json"'], '.');
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toBe('ok\n');
+    expect(result.code).toBe(0);
+  }
 })
  
 
