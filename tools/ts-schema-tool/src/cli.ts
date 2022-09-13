@@ -43,7 +43,9 @@ program.command("validate-credential")
           const credDefJson = JSON.parse(fs.readFileSync(credDef).toString('utf8'));
           const credentialJson = JSON.parse(fs.readFileSync(credential).toString('utf8'));
           const result = schemaCommands.validateCredential(credDefJson,credentialJson);
-          if (!result) process.exit(1)
+          if (!result) {
+               process.exit(1)
+          }
      })
 program.command("json-ld-context")
        .description("generate json-ld-context")
