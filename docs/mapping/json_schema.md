@@ -41,8 +41,8 @@ JSON schema is created from prism credentials with the help of the following rul
               {  type: "string", pattern:  <base64pattern>  }
                ```
     2. For 'ref':
-      1. Check that ref looks like  "#/$defs/<path>/
-      2. Check that path exists and leave one unchanged
+        1. Check that ref looks like  "#/$defs/<path>/
+        2. Check that path exists and leave one unchanged
 
 
 
