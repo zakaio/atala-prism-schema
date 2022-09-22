@@ -29,9 +29,9 @@ JSON schema is created from prism credentials with the help of the following rul
             4. If  'decimal' - transform to number 
             5. If  'integer' – transform to number
             6. If 'timestamp' – transform to
-```
-              {  type:  "string", pattern: <RFC3339 string pattern>  }
-```
+               ```
+                {  type:  "string", pattern: <RFC3339 string pattern>  }
+               ```
             7. If 'date' – transform to
 ```
               { type: "string", pattern:  <ISO8601 Data pattern>  }
