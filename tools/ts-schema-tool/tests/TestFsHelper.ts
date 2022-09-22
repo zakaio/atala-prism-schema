@@ -5,6 +5,9 @@ export class TestFsHelper {
 
 
     public static async forFilesIn(dirName: string, runner: (fullName:string, shortName:string)=>Promise<void>, options = undefined ): Promise<void>  {
+        if (! fs.existsSync(dirName)) {
+            return;
+        }
         const fNames = fs.readdirSync(dirName)
         for(const fname of fNames) {
             const fullFname =  `${dirName}/${fname}`
