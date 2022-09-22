@@ -33,13 +33,13 @@ JSON schema is created from prism credentials with the help of the following rul
                 {  type:  "string", pattern: <RFC3339 string pattern>  }
                ```
             7. If 'date' – transform to
-```
-              { type: "string", pattern:  <ISO8601 Data pattern>  }
-```
+               ```
+                { type: "string", pattern:  <ISO8601 Data pattern>  }
+               ```
             8. If 'binary' – transform to 
-```
+               ```
               {  type: "string", pattern:  <base64pattern>  }
-```
+               ```
     2. For 'ref':
       1. Check that ref looks like  "#/$defs/<path>/
       2. Check that path exists and leave one unchanged
