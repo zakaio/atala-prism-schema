@@ -1,0 +1,21 @@
+{
+ "name": "AddressDID",
+ "version": "1.0",
+ "id":"https://proofspace.id/prism-schemas/token-credentials/did-address-link",
+ "description": "Link between DID and Address",
+ "author" : "ProofSpace",
+ "trustRegistry": {
+	 "type": "issuer",
+	 "comment": "TODO: stricter need for did here ?"
+  },
+ "properties": {
+    "address": { "type": "string"},
+    "transactionId": { "type" : "string" },
+    "tag": { "type": "string" },
+    "issuedDate": { 
+	    "type" : "timestamp",
+	    "title": "Credential Issued Date"
+    }
+ }
+}
+
