@@ -1,9 +1,13 @@
+## Usage
 
-
-Convert prism schema to json_schema:
+### Build the project first
 
 ```
-node dist/cli.js prism-to-json-schems  ../../examples/schemas/PersonName.json
+npm run build
 ```
 
+### Convert prisma schema to json_schema
 
+```
+node dist/src/cli.js prism-to-json-schema  ../../examples/schemas/pos/PersonName.json
+```
