@@ -1,34 +1,33 @@
 {
- "name": "Locked Amount",
- "version": "1.0",
- "id":"https://proofspace.id/prism-schemas/token-credentials/locked-amound",
- "description":  "proof, that address linked to did have some amount locked in smart-contract",
- "author": "ProofSpace",
- "trustRegistry": {
-	 "type" : "permissionless"
- },
- "properties": {
+  "name": "Locked Amount",
+  "version": "1.0",
+  "id": "https://proofspace.id/prism-schemas/token-credentials/locked-amound",
+  "description": "proof, that address linked to did have some amount locked in smart-contract",
+  "author": "ProofSpace",
+  "trustRegistry": {
+    "type": "permissionless"
+  },
+  "properties": {
     "tag": { "type": "string" },
-    "address": { "type": "string"},
+    "address": { "type": "string" },
     "lockAmount": { "type": "decimal" },
-    "lockTime": { 
-	 "type": "timestamp",
-	 "description": "time, until lock is valid. After expiring this time, owner can return unspend amount back",
-	 "timeOf" : "expiration"
+    "lockTime": {
+      "type": "timestamp",
+      "description": "time, until lock is valid. After expiring this time, owner can return unspent amount back",
+      "timeOf": "expiration"
     },
     "lockInput": { "type": "string" },
-    "tokenName": {  "type": "string" },
-    "transactionId": { "type" : "string" },
-    "unlockKey": { 
-	    "type" : "string",
-	    "title" : "Unlock Key",
-	    "description" : "If this value is not 'none', than entity who receive this credential can unlock amount and receive token"
-       },
+    "tokenName": { "type": "string" },
+    "transactionId": { "type": "string" },
+    "unlockKey": {
+      "type": "string",
+      "title": "Unlock Key",
+      "description": "If this value is not 'none', than entity who receive this credential can unlock amount and receive token"
+    },
     "issuedDate": {
-	 "type": "timestamp",
-	 "description": "When this credential was issued",
-	 "timeOf" : "issuing"
+      "type": "timestamp",
+      "description": "When this credential was issued",
+      "timeOf": "issuing"
     }
- }
+  }
 }
-

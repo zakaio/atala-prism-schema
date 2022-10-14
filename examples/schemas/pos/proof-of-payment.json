@@ -1,25 +1,24 @@
 {
- "name": "Link between DID and Address",
- "version": "1.0",
- "id":"https://proofspace.id/prism-schemas/did-address-link",
- "description": "proof, that address make payment",
- "author" : "ProofSpace",
- "trustRegistry" : {
-	 "type": "issuer",
-	 "did" : "did:TODO:some-example-did"
- },
- "properties": {
-    "address": { "type": "string"},
+  "name": "Link between DID and Address",
+  "version": "1.0",
+  "id": "https://proofspace.id/prism-schemas/did-address-link",
+  "description": "proof, that address make payment",
+  "author": "ProofSpace",
+  "trustRegistry": {
+    "type": "issuer",
+    "did": "did:TODO:some-example-did"
+  },
+  "properties": {
+    "address": { "type": "string" },
     "amount": { "type": "decimal" },
     "code": { "type": "string" },
-    "transactionId": { "type" : "string" },
-    "transactionIdx": { "type" : "integer" },
-    "tag": { "type" : "string" },
-    "paymentTime": { "type" : "timestamp" },
+    "transactionId": { "type": "string" },
+    "transactionIdx": { "type": "integer" },
+    "tag": { "type": "string" },
+    "paymentTime": { "type": "timestamp" },
     "issueTime": {
-	    "type": "timestamp",
-	    "timeOf": "issuing"
+      "type": "timestamp",
+      "timeOf": "issuing"
     }
- }
+  }
 }
-
