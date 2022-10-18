@@ -1,17 +1,17 @@
 
 export interface PermissionlessTrustRegistry {
- type: "permissionless";
+  type: "permissionless";
 }
 
 export interface IssuerTrustRegistry {
- type: "issuer";
- issuerDid: string;
+  type: "issuer";
+  issuerDid: string;
 }
 
 export interface TokenCuratedTrustRegistry {
- type: "tokenCurated";
- token: string;
- minAmount: number;
+  type: "tokenCurated";
+  token: string;
+  minAmount: number;
 }
 
 export type TrustRegistry = PermissionlessTrustRegistry | IssuerTrustRegistry | TokenCuratedTrustRegistry;

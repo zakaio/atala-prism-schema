@@ -1,4 +1,4 @@
-import Ajv, {JSONSchemaType} from "ajv"
+import Ajv, { JSONSchemaType } from "ajv"
 
 const ajv = new Ajv()
 
