@@ -2,11 +2,15 @@ import Ajv, { DefinedError, JSONSchemaType } from 'ajv';
 import { RequiredMembers } from 'ajv/dist/types/json-schema';
 import * as fs from 'fs';
 
+import { AnyJson } from './JsonSchema';
 import { ObjectPrismSchemaField, PrismSchema, PrismSchemaField } from './PrismSchema';
 import { PrismSchemaError } from './PrismSchemaError';
 import { EmptySchemaResolver, SchemaResolver } from './SchemaResolver';
 
+const DEFAULT_CONTEXT_SCHEMA = "https://schema.org/Text";
+
 export class SchemaCommands {
+
   private ajv: Ajv;
   private schemaResolver: SchemaResolver;
   private metaSchema: JSONSchemaType<PrismSchema>;
@@ -16,6 +20,7 @@ export class SchemaCommands {
     this.schemaResolver = schemaResolver;
     this.metaSchema = metaSchema;
   }
+
 
   public static create(ajv: Ajv, options: { [key: string]: string }): SchemaCommands {
     const metaSchema = JSON.parse(fs.readFileSync(options['metaschema']).toString('utf8'));
@@ -59,8 +64,10 @@ export class SchemaCommands {
     return retval;
   }
 
-  public generateJsonLdContext(prismSchema: PrismSchema) {
-    throw new Error("generating json-ld context is not implemented yet.")
+  public generateJsonLdDocument(credDef: AnyJson) {
+    const retval = this.generateObjectLikeJsonLDSchema(credDef)
+
+    return retval;
   }
 
   private fieldToSchema(p: string, v: PrismSchemaField, originSchema: PrismSchema): JSONSchemaType<any> {
@@ -136,6 +143,14 @@ export class SchemaCommands {
     }
   }
 
+  private fieldToContext(value: unknown): unknown {
+    switch (typeof value) {
+      // TODO: Put other primitive types here
+      default:
+        return DEFAULT_CONTEXT_SCHEMA;
+    }
+  }
+
   private generateObjectLikeJsonSchema(properties: { [key: string]: PrismSchemaField }, path: string, prismSchema: PrismSchema): JSONSchemaType<any> {
     const prismSchemaProperties = Object.entries(prismSchema.properties);
     const jsonProperties = prismSchemaProperties.map(([k, v]) => {
@@ -150,6 +165,22 @@ export class SchemaCommands {
     }
     if (required.length > 0) {
       retval.required = required as RequiredMembers<any>;
+    }
+    return retval;
+  }
+
+  private generateObjectLikeJsonLDSchema(properties) {
+    const prismSchemaProperties = Object.entries(properties);
+
+    const contextSchemaProperties = prismSchemaProperties.map(([key, value]) => ([
+      [key], this.fieldToContext(value)
+    ]));
+
+    const retval = {
+      "@context": {
+        ...Object.fromEntries(contextSchemaProperties),
+      },
+      ...Object.fromEntries(prismSchemaProperties)
     }
 
     return retval;
