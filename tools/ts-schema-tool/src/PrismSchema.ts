@@ -6,8 +6,9 @@ export interface PrismSchema {
   version: string;
   trustRegistry: TrustRegistry;
   author: string;
-  properties: { [key: string]: PrismSchemaField };
+  properties: PrismSchemaProperties;
 }
+
 export interface CommonPrismSchemaField {
   title?: string;
   fieldName?: string;
@@ -60,7 +61,7 @@ export interface TimestampPrismSchemaField extends CommonPrismSchemaField {
 export interface ObjectPrismSchemaField extends CommonPrismSchemaField {
   type: 'object';
   schema?: string;
-  properties: { [key: string]: PrismSchemaField };
+  properties: PrismSchemaProperties;
 }
 
 export interface ArrayPrismSchemaField extends CommonPrismSchemaField {
@@ -73,14 +74,14 @@ export interface EnumPrismSchemaField extends CommonPrismSchemaField {
   values: Array<string>;
 }
 
-export type PrismSchemaField = StringPrismSchemaField |
-  NumberPrismSchemaField |
-  BooleanPrismSchemaField |
-  DatePrismSchemaField |
-  TimestampPrismSchemaField |
-  ObjectPrismSchemaField |
-  ArrayPrismSchemaField |
-  EnumPrismSchemaField
+export type PrismSchemaField =
+  | StringPrismSchemaField
+  | NumberPrismSchemaField
+  | BooleanPrismSchemaField
+  | DatePrismSchemaField
+  | TimestampPrismSchemaField
+  | ObjectPrismSchemaField
+  | ArrayPrismSchemaField
+  | EnumPrismSchemaField;
 
-
-
+export type PrismSchemaProperties = Record<string, PrismSchemaField>
