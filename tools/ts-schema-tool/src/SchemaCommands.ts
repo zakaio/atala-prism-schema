@@ -154,7 +154,8 @@ export class SchemaCommands {
   private generateObjectLikeJsonSchema(properties: { [key: string]: PrismSchemaField }, path: string, prismSchema: PrismSchema): JSONSchemaType<any> {
     const prismSchemaProperties = Object.entries(properties);
     const jsonProperties = prismSchemaProperties.map(([k, v]) => {
-      const p = (path.length == 0) ? k : `${path}.${k}`
+      // const p = (path.length == 0) ? k : `${path}.${k}`
+      const p = k; // FIXME: make sure this is correct
       return [p, this.fieldToSchema(p, v, prismSchema)]
     });
     const required: Array<string> = prismSchemaProperties.filter(([k, v]) => !(v.optional)).map(([k, v]) => k)
