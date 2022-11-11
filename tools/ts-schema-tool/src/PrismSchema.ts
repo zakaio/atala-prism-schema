@@ -14,9 +14,9 @@ export interface CommonPrismSchemaField {
   fieldName?: string;
   description?: string;
   optional?: boolean;
-  contextUri?: string;
   disclosable?: boolean;
   comparable?: boolean;
+  contextUri?: string;
 }
 
 export interface StringPrismSchemaField extends CommonPrismSchemaField {
@@ -32,7 +32,6 @@ export interface NumberPrismSchemaField extends CommonPrismSchemaField {
   type: 'number' | 'integer' | 'decimal' | 'float';
   description?: string;
   optional?: boolean;
-  contextUri: string;
   minimum: number;
   maximum: number;
 }
@@ -41,21 +40,18 @@ export interface BooleanPrismSchemaField extends CommonPrismSchemaField {
   type: 'boolean';
   description?: string;
   optional?: boolean;
-  contextUri: string;
 }
 
 export interface DatePrismSchemaField extends CommonPrismSchemaField {
   type: 'date';
   description?: string;
   optional?: boolean;
-  contextUri: string;
 }
 
 export interface TimestampPrismSchemaField extends CommonPrismSchemaField {
   type: 'timestamp';
   description?: string;
   optional?: boolean;
-  contextUri: string;
 }
 
 export interface ObjectPrismSchemaField extends CommonPrismSchemaField {
