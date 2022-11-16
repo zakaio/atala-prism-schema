@@ -77,11 +77,14 @@ export class SchemaCommands {
     // Validate JSON-LD schema. Throw error if invalid
     this.validateJsonLdDoc(credValue, jsonLdContext)
 
+    // Output returns an object represented in the vc-data-model (https://www.w3.org/TR/vc-data-model/)
     const retval = {
       "@context": [
+        "https://www.w3.org/2018/credentials/v1",
         jsonLdContext
       ],
-      ...credValue
+      "type": ["VerifiableCredential", prismSchema.name],
+      "credentialSubject": credValue
     }
 
     return retval;
@@ -90,6 +93,8 @@ export class SchemaCommands {
   private generateJsonLDContext(prismSchema: PrismSchema, options: any) {
     const output = {
       "@context": {
+        [prismSchema.name]: prismSchema.id,
+
         // FIXME: trick: use originSchema for external buffer
         ...this.generateObjectLikeJsonLDContext(prismSchema.properties, '', {} as PrismSchema)
       }
@@ -177,8 +182,8 @@ export class SchemaCommands {
   }
 
   /* 
-   * @p - key property
-   * @v - property value
+   * @p - key property (path)
+   * @v - field value
    * @originSchema - full schema definition
   */
   private fieldToContext(p: string, v: PrismSchemaField, originSchema: PrismSchema): any {
