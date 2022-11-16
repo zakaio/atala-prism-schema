@@ -6,16 +6,17 @@ export interface PrismSchema {
   version: string;
   trustRegistry: TrustRegistry;
   author: string;
-  properties: { [key: string]: PrismSchemaField };
+  properties: PrismSchemaProperties;
 }
+
 export interface CommonPrismSchemaField {
   title?: string;
   fieldName?: string;
   description?: string;
   optional?: boolean;
-  contextUri?: string;
   disclosable?: boolean;
   comparable?: boolean;
+  contextUri?: string;
 }
 
 export interface StringPrismSchemaField extends CommonPrismSchemaField {
@@ -31,7 +32,6 @@ export interface NumberPrismSchemaField extends CommonPrismSchemaField {
   type: 'number' | 'integer' | 'decimal' | 'float';
   description?: string;
   optional?: boolean;
-  contextUri: string;
   minimum: number;
   maximum: number;
 }
@@ -40,27 +40,24 @@ export interface BooleanPrismSchemaField extends CommonPrismSchemaField {
   type: 'boolean';
   description?: string;
   optional?: boolean;
-  contextUri: string;
 }
 
 export interface DatePrismSchemaField extends CommonPrismSchemaField {
   type: 'date';
   description?: string;
   optional?: boolean;
-  contextUri: string;
 }
 
 export interface TimestampPrismSchemaField extends CommonPrismSchemaField {
   type: 'timestamp';
   description?: string;
   optional?: boolean;
-  contextUri: string;
 }
 
 export interface ObjectPrismSchemaField extends CommonPrismSchemaField {
   type: 'object';
   schema?: string;
-  properties: { [key: string]: PrismSchemaField };
+  properties: PrismSchemaProperties;
 }
 
 export interface ArrayPrismSchemaField extends CommonPrismSchemaField {
@@ -73,14 +70,14 @@ export interface EnumPrismSchemaField extends CommonPrismSchemaField {
   values: Array<string>;
 }
 
-export type PrismSchemaField = StringPrismSchemaField |
-  NumberPrismSchemaField |
-  BooleanPrismSchemaField |
-  DatePrismSchemaField |
-  TimestampPrismSchemaField |
-  ObjectPrismSchemaField |
-  ArrayPrismSchemaField |
-  EnumPrismSchemaField
+export type PrismSchemaField =
+  | StringPrismSchemaField
+  | NumberPrismSchemaField
+  | BooleanPrismSchemaField
+  | DatePrismSchemaField
+  | TimestampPrismSchemaField
+  | ObjectPrismSchemaField
+  | ArrayPrismSchemaField
+  | EnumPrismSchemaField;
 
-
-
+export type PrismSchemaProperties = Record<string, PrismSchemaField>
