@@ -58,6 +58,7 @@ program.command("json-ld-context")
   .argument("<credDef>", "filename of prism schema definition")
   .argument("<credential>", "file with credential value")
   .option("--base-context-uri <uri>", 'base URI for saving context to the given file')
+  .option("--output <fname>", 'output to the given file')
   .action((credDef, credential, options) => {
     const schemaCommands = SchemaCommands.create(ajv, program.opts());
     const credDefJson = JSON.parse(fs.readFileSync(credDef).toString('utf8'));

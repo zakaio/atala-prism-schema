@@ -1,6 +1,7 @@
 import Ajv, { DefinedError, JSONSchemaType } from 'ajv';
 import { RequiredMembers } from 'ajv/dist/types/json-schema';
 import * as fs from 'fs';
+import * as path from 'path';
 import * as jsonld from 'jsonld';
 
 import { AnyJson } from './JsonSchema';
@@ -19,13 +20,17 @@ export class SchemaCommands {
     this.metaSchema = metaSchema;
   }
 
-
   public static create(ajv: Ajv, options: { [key: string]: string }): SchemaCommands {
     const metaSchema = JSON.parse(fs.readFileSync(options['metaschema']).toString('utf8'));
     const schemaResolver = new EmptySchemaResolver();
     const schemaCommands = new SchemaCommands(ajv, metaSchema, schemaResolver)
     return schemaCommands;
   }
+
+  public convertToKebabCase = str => str
+    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+    .join('-')
+    .toLowerCase();
 
   public validateCredDef(credDef: any): boolean {
     const validateSchema = this.ajv.compile(this.metaSchema)
@@ -77,7 +82,7 @@ export class SchemaCommands {
     // Validate JSON-LD schema. Throw error if invalid
     this.validateJsonLdDoc(credValue, jsonLdContext)
 
-    // Output returns an object represented in the vc-data-model (https://www.w3.org/TR/vc-data-model/)
+    // Output returns an object represented in the vc-data-model (https://www.w3.org/TR/vc-data-model/#example-usage-of-the-type-property)
     const retval = {
       "@context": [
         "https://www.w3.org/2018/credentials/v1",
@@ -91,6 +96,12 @@ export class SchemaCommands {
   }
 
   private generateJsonLDContext(prismSchema: PrismSchema, options: any) {
+    const fileName = `${this.convertToKebabCase(options.output ?? prismSchema.name)}.json`;
+    const pathName = '/credentials-json-ld';
+    const fullPath = `${pathName}/${fileName}`
+    const dirName = path.join(__dirname, '..', pathName);
+    const fullDirName = path.join(dirName, fileName);
+
     const output = {
       "@context": {
         [prismSchema.name]: prismSchema.id,
@@ -100,9 +111,11 @@ export class SchemaCommands {
       }
     }
 
-    if (options.external) {
-      fs.writeFileSync(options.baseContextUri, JSON.stringify(output, null, 2))
-      return options.baseContextUri;
+    if (options.baseContextUri) {
+      fs.mkdirSync(dirName, { recursive: true });
+
+      fs.writeFileSync(fullDirName, JSON.stringify(output, null, 2))
+      return options.baseContextUri + fullPath;
     }
 
     return output;

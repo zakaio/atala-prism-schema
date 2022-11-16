@@ -1,0 +1,76 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    {
+      "@context": {
+        "PersonIndividualData": "https://example.com/PersonIndividualData",
+        "givenName": {
+          "@id": "https://example.com/Text"
+        },
+        "familyName": {
+          "@id": "https://schema.org/Text"
+        },
+        "address": {
+          "@id": "https://schema.org/Text"
+        },
+        "amount": {
+          "@id": "https://schema.org/Float"
+        },
+        "age": {
+          "@id": "https://schema.org/Integer"
+        },
+        "weight": {
+          "@id": "https://schema.org/Number"
+        },
+        "height": {
+          "@id": "https://schema.org/Float"
+        },
+        "birth": {
+          "@id": "https://schema.org/DateTime"
+        },
+        "graduated": {
+          "@id": "https://schema.org/Text"
+        },
+        "gender": {
+          "@id": "https://schema.org/Text"
+        },
+        "employed": {
+          "@id": "https://schema.org/Boolean"
+        },
+        "x": {
+          "@id": "https://schema.org/Integer"
+        },
+        "y": {
+          "@id": "https://schema.org/Integer"
+        },
+        "attitude": "@nest",
+        "geo": "@nest",
+        "skills": {
+          "@container": "@set",
+          "@id": "https://schema.org/Text"
+        }
+      }
+    }
+  ],
+  "type": ["VerifiableCredential", "PersonIndividualData"],
+  "credentialSubject": {
+    "givenName": "John",
+    "familyName": "Doe",
+    "address": "1600 Pennsylvania Avenue NW, Washington, DC 20500, United States",
+    "amount": 999,
+    "age": 36,
+    "weight": 120,
+    "height": 200,
+    "birth": "1985-03-04T08:13:07+00:00",
+    "graduated": "19700120T101228.451+0300",
+    "gender": "male",
+    "employed": true,
+    "geo": {
+      "attitude": {
+        "x": "34°41'19.4",
+        "y": "139°26'13.9"
+      }
+    },
+    "skills": ["react", "typescript", "js"]
+  }
+}

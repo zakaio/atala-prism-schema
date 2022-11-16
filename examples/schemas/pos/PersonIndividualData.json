@@ -1,5 +1,5 @@
 {
-  "name": "PersonName",
+  "name": "PersonIndividualData",
   "description": "Person Individual Data (possible sub-schema values)",
   "id": "https://schema.org/PersonIndividualData",
   "version": "0.0.1",
