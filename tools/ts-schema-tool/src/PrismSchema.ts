@@ -4,6 +4,7 @@ export interface PrismSchema {
   id: string;
   name: string;
   version: string;
+  contextUri?: string;
   trustRegistry: TrustRegistry;
   author: string;
   properties: PrismSchemaProperties;

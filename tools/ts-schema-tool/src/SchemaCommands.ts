@@ -77,7 +77,7 @@ export class SchemaCommands {
     baseURI?: string;
     context: 'inline' | 'external'
   }) {
-    const jsonLdContext = this.generateJsonLDContext(prismSchema, options)
+    const jsonLdContext = prismSchema.contextUri ?? this.generateJsonLDContext(prismSchema, options)
 
     // Validate JSON-LD schema. Throw error if invalid
     this.validateJsonLdDoc(credValue, jsonLdContext)
