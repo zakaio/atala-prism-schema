@@ -39,6 +39,14 @@
       "items": {
         "type": "string"
       }
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string"
+        }
+      }
     }
   }
 }
