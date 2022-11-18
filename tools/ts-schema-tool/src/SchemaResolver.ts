@@ -1,4 +1,4 @@
-import { PrismSchema } from "./PrismSchema";
+import { PrismSchema } from "../types/PrismSchema";
 
 export interface SchemaResolver {
   /**
@@ -8,7 +8,6 @@ export interface SchemaResolver {
    */
   resolveSchema(id: string): PrismSchema | undefined
 }
-
 
 export class DirectorySchemaResolver {
   private data: Map<string, PrismSchema> = new Map();

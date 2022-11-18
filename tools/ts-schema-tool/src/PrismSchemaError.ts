@@ -1,4 +1,3 @@
-
 export class PrismSchemaError {
   public schemaId: string;
   public message: string;
@@ -7,5 +6,4 @@ export class PrismSchemaError {
     this.schemaId = schemaId;
     this.message = message;
   }
-
 }

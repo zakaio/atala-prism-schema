@@ -1,11 +1,14 @@
 import Ajv, { DefinedError, JSONSchemaType } from 'ajv';
 import { RequiredMembers } from 'ajv/dist/types/json-schema';
 import * as fs from 'fs';
-import * as path from 'path';
 import * as jsonld from 'jsonld';
+import * as path from 'path';
 
-import { AnyJson } from './JsonSchema';
-import { ObjectPrismSchemaField, PrismSchema, PrismSchemaField, PrismSchemaProperties } from './PrismSchema';
+import { ContextType, JSONLdDocOptionsType, VcDataModelType } from '../types/JsonLdDocument';
+import { JsonMap } from '../types/JsonSchema';
+import {
+  ObjectPrismSchemaField, PrismSchema, PrismSchemaField, PrismSchemaProperties
+} from '../types/PrismSchema';
 import { PrismSchemaError } from './PrismSchemaError';
 import { EmptySchemaResolver, SchemaResolver } from './SchemaResolver';
 
@@ -32,7 +35,7 @@ export class SchemaCommands {
     .join('-')
     .toLowerCase();
 
-  public validateCredDef(credDef: any): boolean {
+  public validateCredDef(credDef: JsonMap): boolean {
     const validateSchema = this.ajv.compile(this.metaSchema)
     if (validateSchema(credDef)) {
       console.log("ok")
@@ -43,7 +46,7 @@ export class SchemaCommands {
     }
   }
 
-  public validateCredential(credDef: any, credValue: any): boolean {
+  public validateCredential(credDef: JsonMap, credValue: JsonMap): boolean {
     const validateSchema = this.ajv.compile(this.metaSchema)
     if (!validateSchema(credDef)) {
       console.log("Can't validate schema");
@@ -65,60 +68,6 @@ export class SchemaCommands {
     const retval = this.generateObjectLikeJsonSchema(prismSchema.properties, "", prismSchema)
     retval['$schema'] = "https://json-schema.org/draft/2020-12/schema";
     return retval;
-  }
-
-  public async validateJsonLdDoc(doc: any, context: any) {
-    const compacted = await jsonld.compact(doc, context);
-
-    return JSON.stringify(compacted, null, 2)
-  }
-
-  public generateJsonLdDocument(prismSchema: PrismSchema, credValue: any, options: {
-    baseURI?: string;
-    context: 'inline' | 'external'
-  }) {
-    const jsonLdContext = this.generateJsonLDContext(prismSchema, options)
-
-    // Validate JSON-LD schema. Throw error if invalid
-    this.validateJsonLdDoc(credValue, jsonLdContext)
-
-    // Output returns an object represented in the vc-data-model (https://www.w3.org/TR/vc-data-model/#example-usage-of-the-type-property)
-    const retval = {
-      "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        jsonLdContext
-      ],
-      "type": ["VerifiableCredential", prismSchema.name],
-      "credentialSubject": credValue
-    }
-
-    return retval;
-  }
-
-  private generateJsonLDContext(prismSchema: PrismSchema, options: any) {
-    const fileName = `${this.convertToKebabCase(options.output ?? prismSchema.name)}.json`;
-    const pathName = '/credentials-json-ld';
-    const fullPath = `${pathName}/${fileName}`
-    const dirName = path.join(__dirname, '..', pathName);
-    const fullDirName = path.join(dirName, fileName);
-
-    const output = {
-      "@context": {
-        [prismSchema.name]: prismSchema.id,
-
-        // FIXME: trick: use originSchema for external buffer
-        ...this.generateObjectLikeJsonLDContext(prismSchema.properties, '', {} as PrismSchema)
-      }
-    }
-
-    if (options.baseContextUri) {
-      fs.mkdirSync(dirName, { recursive: true });
-
-      fs.writeFileSync(fullDirName, JSON.stringify(output, null, 2))
-      return options.baseContextUri + fullPath;
-    }
-
-    return output;
   }
 
   private fieldToSchema(p: string, v: PrismSchemaField, originSchema: PrismSchema): JSONSchemaType<any> {
@@ -194,12 +143,114 @@ export class SchemaCommands {
     }
   }
 
-  /* 
-   * @p - key property (path)
-   * @v - field value
-   * @originSchema - full schema definition
-  */
-  private fieldToContext(p: string, v: PrismSchemaField, originSchema: PrismSchema): any {
+  private generateObjectLikeJsonSchema(properties: PrismSchemaProperties, path: string, prismSchema: PrismSchema): JSONSchemaType<any> {
+    const prismSchemaProperties = Object.entries(properties);
+    const jsonProperties = prismSchemaProperties.map(([k, v]) => {
+      // FIXME: make sure, we have changed path to single key
+      return [k, this.fieldToSchema(k, v, prismSchema)]
+    });
+    const required: Array<string> = prismSchemaProperties.filter(([k, v]) => !(v.optional)).map(([k, v]) => k)
+    const retval: JSONSchemaType<any> = {
+      "type": "object",
+      "additionalProperties": false,
+      properties: Object.fromEntries(jsonProperties)
+    }
+    if (required.length > 0) {
+      retval.required = required as RequiredMembers<any>;
+    }
+    return retval;
+  }
+
+  private printErrors(errors: Array<DefinedError>) {
+    for (const err of errors) {
+      console.log("error:" + JSON.stringify(err));
+      if (err.propertyName !== undefined) {
+        console.log(`property: ${err.propertyName}`)
+      }
+    }
+  }
+
+  /* Generate JSON LD Document
+  ============================================================================= */
+  public generateJsonLdDocument(prismSchema: PrismSchema, credValue: JsonMap, options: JSONLdDocOptionsType): VcDataModelType {
+    const jsonLdContext = this.generateJsonLDContext(prismSchema, options)
+
+    // Validate JSON-LD schema. Throw exception if method arguments are invalid. Ignoring external context
+    if (typeof jsonLdContext === 'object') {
+      this.validateJsonLdDoc(credValue, jsonLdContext)
+    }
+
+    // Output returns an object represented in the vc-data-model (https://www.w3.org/TR/vc-data-model/#example-usage-of-the-type-property)
+    const retval: VcDataModelType = {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        jsonLdContext
+      ],
+      "type": ["VerifiableCredential", prismSchema.name],
+      "credentialSubject": credValue
+    }
+
+    return retval;
+  }
+
+  private generateJsonLDContext(prismSchema: PrismSchema, options: JSONLdDocOptionsType): (ContextType | string) {
+    const fileName = `${this.convertToKebabCase(options.output ?? prismSchema.name)}.json`;
+    const pathName = '/credentials-json-ld';
+    const fullPath = `${pathName}/${fileName}`
+    const dirName = path.join(__dirname, '..', pathName);
+    const fullDirName = path.join(dirName, fileName);
+
+    const output: ContextType = {
+      "@context": {
+        [prismSchema.name]: prismSchema.id,
+
+        // FIXME: trick: use originSchema for external buffer
+        ...this.generateObjectLikeJsonLDContext(prismSchema.properties, '', {}, prismSchema)
+      }
+    }
+
+    if (options.baseContextUri) {
+      fs.mkdirSync(dirName, { recursive: true });
+
+      fs.writeFileSync(fullDirName, JSON.stringify(output, null, 2))
+      return options.baseContextUri + fullPath;
+    }
+
+    return output;
+  }
+
+  private generateObjectLikeJsonLDContext(properties: PrismSchemaProperties, path: string, objectBuffer: JsonMap, prismSchema: PrismSchema): JsonMap {
+    const prismSchemaProperties = Object.entries(properties);
+
+    prismSchemaProperties.map(([k, v]) => {
+      const nextFieldNode = this.fieldToContext(k, v, objectBuffer, prismSchema);
+      if (v.type === 'object') {
+        objectBuffer[k] = '@nest'
+      } else {
+        objectBuffer[k] = nextFieldNode
+      }
+
+      return objectBuffer
+    });
+
+
+    return objectBuffer
+  }
+
+  public async validateJsonLdDoc(doc: JsonMap, context: ContextType) {
+    const compacted = await jsonld.compact(doc, context);
+
+    return JSON.stringify(compacted, null, 2)
+  }
+
+  /**
+   * Helper function to generate json-ld context from schema definition field
+   * @param p Field key name 
+   * @param v Field properties object
+   * @param objectBuffer Recursive context buffer
+   * @param originSchema Credential definition (schema)
+   */
+  private fieldToContext(p: string, v: PrismSchemaField, objectBuffer: JsonMap, originSchema: PrismSchema): JsonMap {
     // If credential schema has @contextUri property, returns it backwards
     if (v.contextUri) {
       return {
@@ -219,7 +270,7 @@ export class SchemaCommands {
     const vType = v.type;
     switch (vType) {
       case 'object':
-        return this.generateObjectLikeJsonLDContext(v.properties, p, originSchema)
+        return this.generateObjectLikeJsonLDContext(v.properties, p, objectBuffer, originSchema)
       case 'enum':
       case 'string':
       case 'date':
@@ -250,57 +301,11 @@ export class SchemaCommands {
       case 'array':
         return {
           "@container": "@set",
-          ...this.fieldToContext(p, v.items, originSchema)
+          ...this.fieldToContext(p, v.items, objectBuffer, originSchema)
         }
       default:
         // other is subset of verify, can return as is.
         throw new PrismSchemaError(originSchema.id, "Invalid type:" + vType)
-    }
-  }
-
-  private generateObjectLikeJsonLDContext(properties: PrismSchemaProperties, path: string, prismSchema: PrismSchema) {
-    const prismSchemaProperties = Object.entries(properties);
-
-    prismSchemaProperties.map(([k, v]) => {
-      const nextFieldNode = this.fieldToContext(k, v, prismSchema);
-      if (v.type === 'object') {
-        prismSchema[k] = '@nest'
-      } else {
-        prismSchema[k] = nextFieldNode
-      }
-
-      return prismSchema
-    });
-
-
-    return prismSchema
-  }
-
-  private generateObjectLikeJsonSchema(properties: PrismSchemaProperties, path: string, prismSchema: PrismSchema): JSONSchemaType<any> {
-    const prismSchemaProperties = Object.entries(properties);
-    const jsonProperties = prismSchemaProperties.map(([k, v]) => {
-      // const p = (path.length == 0) ? k : `${path}.${k}`
-      const p = k; // FIXME: make sure, we have changed path to single key
-      return [p, this.fieldToSchema(p, v, prismSchema)]
-    });
-    const required: Array<string> = prismSchemaProperties.filter(([k, v]) => !(v.optional)).map(([k, v]) => k)
-    const retval: JSONSchemaType<any> = {
-      "type": "object",
-      "additionalProperties": false,
-      properties: Object.fromEntries(jsonProperties)
-    }
-    if (required.length > 0) {
-      retval.required = required as RequiredMembers<any>;
-    }
-    return retval;
-  }
-
-  private printErrors(errors: Array<DefinedError>) {
-    for (const err of errors) {
-      console.log("error:" + JSON.stringify(err));
-      if (err.propertyName !== undefined) {
-        console.log(`property: ${err.propertyName}`)
-      }
     }
   }
 }

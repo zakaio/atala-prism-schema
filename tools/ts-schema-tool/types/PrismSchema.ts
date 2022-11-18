@@ -1,4 +1,4 @@
-import { TrustRegistry } from "./TrustRegistry";
+import { TrustRegistry } from './TrustRegistry';
 
 export interface PrismSchema {
   id: string;
