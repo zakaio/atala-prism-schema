@@ -143,18 +143,24 @@ export class SchemaCommands {
     }
   }
 
-  private generateObjectLikeJsonSchema(properties: PrismSchemaProperties, path: string, prismSchema: PrismSchema): JSONSchemaType<any> {
+  private generateObjectLikeJsonSchema(properties: PrismSchemaProperties = {}, path: string, prismSchema: PrismSchema): JSONSchemaType<any> {
     const prismSchemaProperties = Object.entries(properties);
     const jsonProperties = prismSchemaProperties.map(([k, v]) => {
       // FIXME: make sure, we have changed path to single key
       return [k, this.fieldToSchema(k, v, prismSchema)]
     });
     const required: Array<string> = prismSchemaProperties.filter(([k, v]) => !(v.optional)).map(([k, v]) => k)
-    const retval: JSONSchemaType<any> = {
+
+    // FIXME: additionalProperties based on properties length looks like a dirty solution
+    const retval: JSONSchemaType<any> = jsonProperties.length > 0 ? {
       "type": "object",
       "additionalProperties": false,
       properties: Object.fromEntries(jsonProperties)
+    } : {
+      "type": "object",
+      "additionalProperties": true
     }
+
     if (required.length > 0) {
       retval.required = required as RequiredMembers<any>;
     }
@@ -219,7 +225,7 @@ export class SchemaCommands {
     return output;
   }
 
-  private generateObjectLikeJsonLDContext(properties: PrismSchemaProperties, path: string, objectBuffer: JsonMap, prismSchema: PrismSchema): JsonMap {
+  private generateObjectLikeJsonLDContext(properties: PrismSchemaProperties = {}, path: string, objectBuffer: JsonMap, prismSchema: PrismSchema): JsonMap {
     const prismSchemaProperties = Object.entries(properties);
 
     prismSchemaProperties.map(([k, v]) => {
@@ -231,6 +237,8 @@ export class SchemaCommands {
           "@container": "@set",
           "@id": "https://schema.org/MediaObject"
         }
+      } else if ((v as ObjectPrismSchemaField).additionalProperties) {
+        objectBuffer[k] = '@null'
       } else if (v.type === 'object') {
         // Handle nested nodes
         objectBuffer[k] = '@nest'
@@ -240,7 +248,6 @@ export class SchemaCommands {
 
       return objectBuffer
     });
-
 
     return objectBuffer
   }

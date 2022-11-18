@@ -47,6 +47,10 @@
           "type": "string"
         }
       }
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": true
     }
   }
 }
