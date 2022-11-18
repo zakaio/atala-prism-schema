@@ -11,7 +11,7 @@ const ajv = new Ajv2020()
 
 const program = new Command();
 program.name("schema-tool")
-program.option("--metaschema <schemaFile>", 'specify a file with metadefintion for prism-schema', "../../json_schema/meta/prism-credentials.json")
+program.option("--metaschema <schemaFile>", 'specify a file with metadefinition for prism-schema', "../../json_schema/meta/prism-credentials.json")
 program.option("--prism-schema-dir <directory>", 'specify a directory with schema ', '../../prism_schemas')
 
 program.command("check-schema-definition")
@@ -26,7 +26,7 @@ program.command("check-schema-definition")
 program.command("prism-to-json-schema")
   .description("convert prism schema to json schema")
   .argument("<file>", "filename of prism schema definition to convert")
-  .option("--output <fname>", 'outpit to the given file')
+  .option("--output <fname>", 'output to the given file')
   .action((file, options) => {
     const schemaCommands = SchemaCommands.create(ajv, program.opts());
     const credDefJson = JSON.parse(fs.readFileSync(file).toString('utf8'));
@@ -42,6 +42,7 @@ program.command("validate-credential")
   .description("validate credential json")
   .argument("<credDef>", "filename of prism schema definition")
   .argument("<credential>", "file with credential value")
+  .option("--output <fname>", 'output to the given file')
   .action((credDef, credential) => {
     const schemaCommands = SchemaCommands.create(ajv, program.opts());
     const credDefJson = JSON.parse(fs.readFileSync(credDef).toString('utf8'));
@@ -55,10 +56,20 @@ program.command("validate-credential")
 program.command("json-ld-context")
   .description("generate json-ld-context")
   .argument("<credDef>", "filename of prism schema definition")
-  .action((credDef) => {
+  .argument("<credential>", "file with credential value")
+  .option("--base-context-uri <uri>", 'base URI for saving context to the given file')
+  .option("--output <fname>", 'output to the given file')
+  .action((credDef, credential, options) => {
     const schemaCommands = SchemaCommands.create(ajv, program.opts());
     const credDefJson = JSON.parse(fs.readFileSync(credDef).toString('utf8'));
+    const credentialJson = JSON.parse(fs.readFileSync(credential).toString('utf8'));
+
+    const jsonSchema = schemaCommands.generateJsonLdDocument(credDefJson, credentialJson, options);
+    if (options['output'] === undefined) {
+      console.log(JSON.stringify(jsonSchema, null, 2))
+    } else {
+      fs.writeFileSync(options['output'], JSON.stringify(jsonSchema, null, 2))
+    }
   })
 
 program.parse();
-

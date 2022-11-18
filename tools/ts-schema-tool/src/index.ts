@@ -4,5 +4,4 @@ const ajv = new Ajv()
 
 export function validateSchema(metaSchema: string, schema: string) {
 
-
 }
