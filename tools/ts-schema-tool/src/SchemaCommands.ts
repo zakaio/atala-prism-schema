@@ -225,7 +225,7 @@ export class SchemaCommands {
     prismSchemaProperties.map(([k, v]) => {
       const nextFieldNode = this.fieldToContext(k, v, objectBuffer, prismSchema);
 
-      if (k === 'image') {
+      if (k === 'binary') {
         // Handle base64 binary fields
         prismSchema[k] = {
           "@container": "@set",

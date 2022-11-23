@@ -40,10 +40,10 @@
         "type": "string"
       }
     },
-    "image": {
+    "binary": {
       "type": "object",
       "properties": {
-        "image": {
+        "binary": {
           "type": "string"
         }
       }
