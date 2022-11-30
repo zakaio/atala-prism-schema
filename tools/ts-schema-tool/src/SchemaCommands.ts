@@ -224,7 +224,15 @@ export class SchemaCommands {
 
     prismSchemaProperties.map(([k, v]) => {
       const nextFieldNode = this.fieldToContext(k, v, objectBuffer, prismSchema);
-      if (v.type === 'object') {
+
+      if (k === 'binary') {
+        // Handle base64 binary fields
+        prismSchema[k] = {
+          "@container": "@set",
+          "@id": "https://schema.org/MediaObject"
+        }
+      } else if (v.type === 'object') {
+        // Handle nested nodes
         objectBuffer[k] = '@nest'
       } else {
         objectBuffer[k] = nextFieldNode

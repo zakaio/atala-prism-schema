@@ -39,6 +39,14 @@
       "items": {
         "type": "string"
       }
+    },
+    "binary": {
+      "type": "object",
+      "properties": {
+        "binary": {
+          "type": "string"
+        }
+      }
     }
   }
 }
