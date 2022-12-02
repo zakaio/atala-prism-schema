@@ -7,6 +7,7 @@ export interface PrismSchema {
   trustRegistry: TrustRegistry;
   author: string;
   properties: PrismSchemaProperties;
+  contextUri?: string;
 }
 
 export interface CommonPrismSchemaField {

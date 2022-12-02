@@ -3,9 +3,12 @@ import Ajv2020 from 'ajv/dist/2020';
 import { operators } from 'ajv/dist/compile/codegen';
 import { Command } from 'commander';
 import * as fs from 'fs';
+import * as path from 'path';
 
 import { SchemaCommands } from './SchemaCommands';
 import { EmptySchemaResolver } from './SchemaResolver';
+
+export const JSON_LD_CONTEXT_PATHNAME = '/json-ld-contexts';
 
 const ajv = new Ajv2020()
 
@@ -56,8 +59,28 @@ program.command("validate-credential")
 program.command("json-ld-context")
   .description("generate json-ld-context")
   .argument("<credDef>", "filename of prism schema definition")
+  .option("--output <fname>", 'output to the given file')
+  .action((credDef, options) => {
+    const schemaCommands = SchemaCommands.create(ajv, program.opts());
+    const credDefJson = JSON.parse(fs.readFileSync(credDef).toString('utf8'));
+    const context = schemaCommands.generateJsonLDContext(credDefJson, options);
+
+    if (options['output'] === undefined) {
+      console.log(JSON.stringify(context, null, 2))
+    } else {
+      const dirName = path.join(__dirname, '..', JSON_LD_CONTEXT_PATHNAME);
+      const fullDirName = path.join(dirName, options.output);
+
+      fs.mkdirSync(dirName, { recursive: true });
+      fs.writeFileSync(fullDirName, JSON.stringify(context, null, 2))
+    }
+  })
+
+program.command("prism-to-json-ld")
+  .argument("<credDef>", "filename of prism schema definition")
   .argument("<credential>", "file with credential value")
-  .option("--base-context-uri <uri>", 'base URI for saving context to the given file')
+  .option("--context [inline | external]", 'generate context in file or as url')
+  .option("--base-context-uri <uri>", 'base URI for external context')
   .option("--output <fname>", 'output to the given file')
   .action((credDef, credential, options) => {
     const schemaCommands = SchemaCommands.create(ajv, program.opts());

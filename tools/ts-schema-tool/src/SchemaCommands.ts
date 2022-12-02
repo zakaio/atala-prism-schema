@@ -9,6 +9,7 @@ import { JsonMap } from '../types/JsonSchema';
 import {
   ObjectPrismSchemaField, PrismSchema, PrismSchemaField, PrismSchemaProperties
 } from '../types/PrismSchema';
+import { JSON_LD_CONTEXT_PATHNAME } from './cli';
 import { PrismSchemaError } from './PrismSchemaError';
 import { EmptySchemaResolver, SchemaResolver } from './SchemaResolver';
 
@@ -29,11 +30,6 @@ export class SchemaCommands {
     const schemaCommands = new SchemaCommands(ajv, metaSchema, schemaResolver)
     return schemaCommands;
   }
-
-  public convertToKebabCase = str => str
-    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-    .join('-')
-    .toLowerCase();
 
   public validateCredDef(credDef: JsonMap): boolean {
     const validateSchema = this.ajv.compile(this.metaSchema)
@@ -179,12 +175,13 @@ export class SchemaCommands {
   /* Generate JSON LD Document
   ============================================================================= */
   public generateJsonLdDocument(prismSchema: PrismSchema, credValue: JsonMap, options: JSONLdDocOptionsType): VcDataModelType {
-    const jsonLdContext = this.generateJsonLDContext(prismSchema, options)
+    const jsonLdContext = this.getJsonLDContext(prismSchema, options)
 
+    // TODO: add validation for 3d party context 
     // Validate JSON-LD schema. Throw exception if method arguments are invalid. Ignoring external context
-    if (typeof jsonLdContext === 'object') {
-      this.validateJsonLdDoc(credValue, jsonLdContext)
-    }
+    // if (typeof jsonLdContext === 'object') {
+    //   this.validateJsonLdDoc(credValue, jsonLdContext)
+    // }
 
     // Output returns an object represented in the vc-data-model (https://www.w3.org/TR/vc-data-model/#example-usage-of-the-type-property)
     const retval: VcDataModelType = {
@@ -199,27 +196,34 @@ export class SchemaCommands {
     return retval;
   }
 
-  private generateJsonLDContext(prismSchema: PrismSchema, options: JSONLdDocOptionsType): (ContextType | string) {
-    const fileName = `${this.convertToKebabCase(options.output ?? prismSchema.name)}.json`;
-    const pathName = '/credentials-json-ld';
-    const fullPath = `${pathName}/${fileName}`
-    const dirName = path.join(__dirname, '..', pathName);
-    const fullDirName = path.join(dirName, fileName);
+  private getJsonLDContext(prismSchema: PrismSchema, options: JSONLdDocOptionsType): string {
+    const baseContextUri = options.baseContextUri ?? '';
 
+    // Returns 3d party context
+    if (prismSchema.contextUri) {
+      return prismSchema.contextUri
+    }
+
+    // Returns uri for external json-ld context
+    if (options.context === 'external') {
+      return `${baseContextUri}${JSON_LD_CONTEXT_PATHNAME}/${prismSchema.name}.json`
+    }
+
+    // Returns inline json-ld context
+    const fullDirName = path.join(__dirname, '..', JSON_LD_CONTEXT_PATHNAME, `${options.output ?? prismSchema.name}.json`);
+    const jsonLdContext = JSON.parse(fs.readFileSync(fullDirName).toString('utf8'));
+
+    return jsonLdContext
+  }
+
+  /* Generate JSON LD Context
+  ============================================================================= */
+  public generateJsonLDContext(prismSchema: PrismSchema, options: JSONLdDocOptionsType): ContextType {
     const output: ContextType = {
       "@context": {
         [prismSchema.name]: prismSchema.id,
-
-        // FIXME: trick: use originSchema for external buffer
         ...this.generateObjectLikeJsonLDContext(prismSchema.properties, '', {}, prismSchema)
       }
-    }
-
-    if (options.baseContextUri) {
-      fs.mkdirSync(dirName, { recursive: true });
-
-      fs.writeFileSync(fullDirName, JSON.stringify(output, null, 2))
-      return options.baseContextUri + fullPath;
     }
 
     return output;

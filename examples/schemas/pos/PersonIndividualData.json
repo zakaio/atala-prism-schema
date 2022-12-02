@@ -1,7 +1,7 @@
 {
   "name": "PersonIndividualData",
   "description": "Person Individual Data (possible sub-schema values)",
-  "id": "https://schema.org/PersonIndividualData",
+  "id": "https://example.com/PersonIndividualData",
   "version": "0.0.1",
   "author": "did:email:artem2431@gmail.com",
   "trustRegistry": {
