@@ -28,7 +28,7 @@ Configuration of the resolver:
 
 Functionality:
    - retrieve json-ld for proofspace prism scheme with url, where first part is external prefix (url-prefix),  second part is the layout of appropriate file in the suoplied (schemas-dir).  `<url-prefix>/json-ld-contexts/<location of schema in (schema-dir)>...`
-   - retrieve prism-schema in the same way, where url for prism-schema are `<url-prefix>/proofspace-prisn-schemas/<location of schema in (schema-dir)``
-   - retrieve json-schema in the same way, where url for prism-schema are `<url-prefix>/json-schemas/<location of schema in 
+   - retrieve prism-schema in the same way, where url for prism-schema are `<url-prefix>/proofspace-prisn-schemas/<location of schema in (schema-dir)`
+   - retrieve json-schema in the same way, where url for prism-schema are `<url-prefix>/json-schemas/<location>` of schema in 
 
 We can embedd server in our cli tool,  adding command --serve there.
