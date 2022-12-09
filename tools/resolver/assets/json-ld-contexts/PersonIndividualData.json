@@ -1,0 +1,51 @@
+{
+  "@context": {
+    "PersonIndividualData": "https://example.com/PersonIndividualData",
+    "givenName": {
+      "@id": "https://example.com/Text"
+    },
+    "familyName": {
+      "@id": "https://schema.org/Text"
+    },
+    "address": {
+      "@id": "https://schema.org/Text"
+    },
+    "amount": {
+      "@id": "https://schema.org/Float"
+    },
+    "age": {
+      "@id": "https://schema.org/Integer"
+    },
+    "weight": {
+      "@id": "https://schema.org/Number"
+    },
+    "height": {
+      "@id": "https://schema.org/Float"
+    },
+    "birth": {
+      "@id": "https://schema.org/DateTime"
+    },
+    "graduated": {
+      "@id": "https://schema.org/Text"
+    },
+    "gender": {
+      "@id": "https://schema.org/Text"
+    },
+    "employed": {
+      "@id": "https://schema.org/Boolean"
+    },
+    "x": {
+      "@id": "https://schema.org/Integer"
+    },
+    "y": {
+      "@id": "https://schema.org/Integer"
+    },
+    "attitude": "@nest",
+    "geo": "@nest",
+    "skills": {
+      "@container": "@set",
+      "@id": "https://schema.org/Text"
+    },
+    "proof": "@null"
+  }
+}
