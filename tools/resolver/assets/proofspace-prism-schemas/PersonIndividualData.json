@@ -1,0 +1,56 @@
+{
+  "name": "PersonIndividualData",
+  "description": "Person Individual Data (possible sub-schema values)",
+  "id": "https://example.com/PersonIndividualData",
+  "version": "0.0.1",
+  "author": "did:email:artem2431@gmail.com",
+  "trustRegistry": {
+    "type": "permissionless"
+  },
+  "properties": {
+    "givenName": { "type": "string", "contextUri": "https://example.com/Text" },
+    "familyName": { "type": "string" },
+    "address": { "type": "string" },
+    "amount": { "type": "decimal" },
+    "age": { "type": "integer" },
+    "weight": { "type": "number" },
+    "height": { "type": "float" },
+    "birth": { "type": "timestamp" },
+    "graduated": { "type": "date" },
+    "gender": {
+      "type": "string",
+      "enum": ["male", "female"]
+    },
+    "employed": { "type": "boolean" },
+    "geo": {
+      "type": "object",
+      "properties": {
+        "attitude": {
+          "type": "object",
+          "properties": {
+            "x": { "type": "integer" },
+            "y": { "type": "integer" }
+          }
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "binary": {
+      "type": "object",
+      "properties": {
+        "binary": {
+          "type": "string"
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
