@@ -12,5 +12,6 @@ export type VcDataModelType = {
 
 export type JSONLdDocOptionsType = {
   baseContextUri?: string;
+  context?: "inline" | "external";
   output?: string;
 }

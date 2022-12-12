@@ -1,4 +1,4 @@
-import { TrustRegistry } from './TrustRegistry';
+import { TrustRegistry } from "./TrustRegistry";
 
 export interface PrismSchema {
   id: string;
@@ -7,6 +7,7 @@ export interface PrismSchema {
   trustRegistry: TrustRegistry;
   author: string;
   properties: PrismSchemaProperties;
+  contextUri?: string;
 }
 
 export interface CommonPrismSchemaField {
@@ -56,8 +57,9 @@ export interface TimestampPrismSchemaField extends CommonPrismSchemaField {
 
 export interface ObjectPrismSchemaField extends CommonPrismSchemaField {
   type: 'object';
-  schema?: string;
   properties: PrismSchemaProperties;
+  additionalProperties?: boolean;
+  schema?: string;
 }
 
 export interface ArrayPrismSchemaField extends CommonPrismSchemaField {
